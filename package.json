@@ -1,0 +1,32 @@
+{
+  "name": "epm-node-training",
+  "version": "1.0.0",
+  "description": "- HOMEWORK 1 \"Node.js modules, npm\"",
+  "main": "app.js",
+  "scripts": {
+    "babel-register": "babel-register",
+    "start": "nodemon --exec npm run babel-register -- ./app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tony-Klink/epm-node-training.git"
+  },
+  "keywords": [
+    "education"
+  ],
+  "author": "Ian Tonkikh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tony-Klink/epm-node-training/issues"
+  },
+  "homepage": "https://github.com/Tony-Klink/epm-node-training#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babel-register-cli": "^5.0.0",
+    "nodemon": "^1.17.3"
+  }
+}
