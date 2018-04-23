@@ -1,1 +1,2 @@
-# epm-node-training
+# EPAM NODE.JS TRAINING MODULES
+- HOMEWORK 1 "Node.js modules, npm"
