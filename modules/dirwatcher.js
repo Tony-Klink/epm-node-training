@@ -47,14 +47,13 @@ class FileDetail {
     }
 }
 
-export class DirWatcher {
+export class DirWatcher extends events.EventEmitter {
     constructor(root, recursive) {
+        super();
         this._root = root;
         this._recursive = recursive;
         this._directoryStructure = {};
         this._timer = null;
-        events.EventEmitter.call(this);
-        util.inherits(DirWatcher, events.EventEmitter);
     }
 
     selectParentNode(dir) {

@@ -28,5 +28,8 @@
     "babel-register": "^6.26.0",
     "babel-register-cli": "^5.0.0",
     "nodemon": "^1.17.3"
+  },
+  "dependencies": {
+    "papaparse": "^4.4.0"
   }
 }
