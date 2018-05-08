@@ -6,9 +6,11 @@ export class Importer {
     constructor(dirWatcher) {
         this.dirWatcher = dirWatcher;
         this.listener = (fd, changes) => {
-            this.import(fd.fullPath).then(data => {
-                console.log(csvParser.parse(data.toString()).data)
-            });
+            if (fd.extension === '.csv') {
+                this.import(fd.fullPath).then(data => {
+                    console.log(csvParser.parse(data.toString()).data)
+                });
+            }
         };
         this.dirWatcher.on('fileChanged', this.listener);
         this.dirWatcher.on('fileAdded', this.listener);
