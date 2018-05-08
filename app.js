@@ -1,7 +1,16 @@
 import "babel-register";
-import { name } from './config/config.json';
-import { User, Product } from './modules'
+import { DirWatcher } from './modules';
 
-console.log(`import config.json: ${name}`);
-const user = new User();
-const product = new Product();
+const a = new DirWatcher('./data', false);
+
+// console.log(a);
+
+a.start(500);
+
+a.on('fileChanged', (fd, changes) => {
+    console.log('File changed ' + fd);
+});
+
+a.on('fileAdded', (fd, changes) => {
+    console.log('File added ' + fd.fullPath);
+})

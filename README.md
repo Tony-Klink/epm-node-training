@@ -1,2 +1,2 @@
 # EPAM NODE.JS TRAINING MODULES
-- HOMEWORK 1 "Node.js modules, npm"
+- HOMEWORK 2 "Async development"
