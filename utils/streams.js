@@ -61,7 +61,7 @@ export function convertToFile(filePath) {
 function cssBundler(folderPath) {
     let fPath = path.normalize(folderPath);
     if (fPath.substr(fPath.length - 1) !== '\\') {
-        fPath += '\\';
+        fPath += path.sep;
     };
     const cssAppendix = `.ngmp18 {
         background-color: #fff;
