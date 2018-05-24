@@ -2,9 +2,9 @@
   "name": "epm-node-training",
   "version": "1.0.0",
   "description": "- HOMEWORK 3 \"Command Line. Debugging. Error handling / File System and Streams\"",
-  "main": "app.js",
+  "main": "streams.js",
   "scripts": {
-    "start": "npx babel-node ./app.js"
+    "build": "npx babel utils --out-file streams.js"
   },
   "repository": {
     "type": "git",

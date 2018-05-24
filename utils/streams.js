@@ -2,6 +2,7 @@ import * as csvParser from 'papaparse';
 import through2 from 'through2';
 import * as fs from 'fs';
 import { promisify } from 'util';
+import program from 'commander';
 
 export function reverse() {
     process.stdin.pipe(through2(function (chunk, enc, cb) {
@@ -44,7 +45,7 @@ export function convertToFile(filePath) {
     });
 }
 
-export function cssBundler(folderPath) {
+function cssBundler(folderPath) {
     const cssAppendix = `.ngmp18 {
         background-color: #fff;
         overflow: hidden;
@@ -83,4 +84,60 @@ export function cssBundler(folderPath) {
     }).catch((err) => {
         console.log(err.toString());
     })
+}
+
+program.version('0.0.1')
+    .option('-a, --Action [value]', 'Action')
+    .option('-f, --file [value]', 'Input file')
+    .option('-r, --read [value]', 'CSS READ directoty path')
+    .parse(process.argv);
+
+switch (program.Action) {
+    case 'reverse': {
+        reverse();
+        break;
+    }
+    case 'transform': {
+        transform();
+        break;
+    }
+    case 'outputFile': {
+        if (program.file) {
+            outputFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'convertFromFile': {
+        if (program.file) {
+            convertFromFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'convertToFile': {
+        if (program.file) {
+            convertToFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'cssBundle': {
+        if (program.read) {
+            cssBundler(program.read);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    default: {
+        program.outputHelp();
+    }
 }
