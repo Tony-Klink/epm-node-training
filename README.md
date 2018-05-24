@@ -3,7 +3,11 @@
 
 To run code:
 
-- npm run start -- -a ACTION -optional_command
+-  node .\streams.js -a ACTION -optional_command
+
+To build code:
+
+- npm run build
 
 Available commands:
 
