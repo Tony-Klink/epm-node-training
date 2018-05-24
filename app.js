@@ -1,7 +1,58 @@
-import "babel-register";
-import { DirWatcher, Importer } from './modules';
+import program from 'commander';
+import { reverse, transform, outputFile, convertFromFile, convertToFile, cssBundler } from './utils/streams';
 
-const a = new DirWatcher('./data', false);
-const b = new Importer(a);
+program.version('0.0.1')
+    .option('-a, --Action [value]', 'Action')
+    .option('-f, --file [value]', 'Input file')
+    .option('-r, --read [value]', 'CSS READ directoty path')
+    .parse(process.argv);
 
-a.start(1000); // time in ms
+switch (program.Action) {
+    case 'reverse': {
+        reverse();
+        break;
+    }
+    case 'transform': {
+        transform();
+        break;
+    }
+    case 'outputFile': {
+        if (program.file) {
+            outputFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'convertFromFile': {
+        if (program.file) {
+            convertFromFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'convertToFile': {
+        if (program.file) {
+            convertToFile(program.file);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    case 'cssBundle': {
+        if (program.read) {
+            cssBundler(program.read);
+            break;
+        } else {
+            program.outputHelp();
+            break;
+        }
+    }
+    default: {
+        program.outputHelp();
+    }
+}
