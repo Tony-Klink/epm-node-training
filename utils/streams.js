@@ -28,6 +28,10 @@ export function convertFromFile(filePath) {
     csvParser.parse(file, {
         chunk: function (result, parser) {
             process.stdout.write(JSON.stringify(result.data));
+        },
+        complete: function() {
+            file.close();
+            process.kill();
         }
     });
 }
@@ -41,6 +45,8 @@ export function convertToFile(filePath) {
         complete: function (result, file) {
             let ws = fs.createWriteStream(filePath.substring(0, filePath.length - 3) + 'json').on('error', (err) => console.log(err.toString()));
             ws.write(JSON.stringify(result.data));
+            rs.close();
+            ws.close();
         }
     });
 }

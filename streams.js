@@ -68,6 +68,8 @@ function convertToFile(filePath) {
         complete: function (result, file) {
             let ws = fs.createWriteStream(filePath.substring(0, filePath.length - 3) + 'json').on('error', err => console.log(err.toString()));
             ws.write(JSON.stringify(result.data));
+            rs.close();
+            ws.close();
         }
     });
 }
