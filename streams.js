@@ -27,6 +27,10 @@ var _commander = require('commander');
 
 var _commander2 = _interopRequireDefault(_commander);
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -46,23 +50,33 @@ function transform() {
 }
 
 function outputFile(filePath) {
-    let file = fs.createReadStream(filePath).on('error', err => console.log(err.toString()));
+    let file = fs.createReadStream(_path2.default.normalize(filePath)).on('error', err => console.log(err.toString()));
     file.pipe(process.stdout);
 }
 
 function convertFromFile(filePath) {
-    let file = fs.createReadStream(filePath).on('error', err => console.log(err.toString()));
+    let file = fs.createReadStream(_path2.default.normalize(filePath)).on('error', err => {
+        console.log(err.toString());
+        console.log('Invalid argument');
+        _commander2.default.outputHelp();
+    });
     csvParser.parse(file, {
         chunk: function (result, parser) {
             process.stdout.write(JSON.stringify(result.data));
+        },
+        complete: function () {
+            file.close();
+            process.kill();
         }
     });
 }
 
 function convertToFile(filePath) {
     let ctx = 0;
-    let rs = fs.createReadStream(filePath).on('error', err => {
+    let rs = fs.createReadStream(_path2.default.normalize(filePath)).on('error', err => {
         console.log(err.toString());
+        console.log('Invalid argument');
+        _commander2.default.outputHelp();
     });
     csvParser.parse(rs, {
         complete: function (result, file) {
@@ -75,6 +89,10 @@ function convertToFile(filePath) {
 }
 
 function cssBundler(folderPath) {
+    let fPath = _path2.default.normalize(folderPath);
+    if (fPath.substr(fPath.length - 1) !== '\\') {
+        fPath += '\\';
+    };
     const cssAppendix = `.ngmp18 {
         background-color: #fff;
         overflow: hidden;
@@ -91,7 +109,7 @@ function cssBundler(folderPath) {
         font-weight: bold;
       }\n`;
     let cssFiles;
-    (0, _util.promisify)(fs.readdir)(folderPath).then(filenames => {
+    (0, _util.promisify)(fs.readdir)(fPath).then(filenames => {
         cssFiles = filenames.filter(file => {
             if (file.substr(file.length - 3) === 'css') {
                 return true;
@@ -100,7 +118,7 @@ function cssBundler(folderPath) {
             }
         });
         return Promise.all(cssFiles.map(filename => {
-            return (0, _util.promisify)(fs.readFile)(folderPath + filename);
+            return (0, _util.promisify)(fs.readFile)(fPath + filename);
         }));
     }).then(buffArr => {
         let cssString = '';
@@ -109,9 +127,11 @@ function cssBundler(folderPath) {
         });
         return cssString + cssAppendix;
     }).then(cssString => {
-        (0, _util.promisify)(fs.writeFile)(folderPath + 'bundle.css', cssString);
+        (0, _util.promisify)(fs.writeFile)(fPath + 'bundle.css', cssString);
     }).catch(err => {
         console.log(err.toString());
+        console.log('Invalid argument');
+        _commander2.default.outputHelp();
     });
 }
 
@@ -134,6 +154,7 @@ switch (_commander2.default.Action) {
                 outputFile(_commander2.default.file);
                 break;
             } else {
+                console.log('Invalid argument');
                 _commander2.default.outputHelp();
                 break;
             }
@@ -144,6 +165,7 @@ switch (_commander2.default.Action) {
                 convertFromFile(_commander2.default.file);
                 break;
             } else {
+                console.log('Invalid argument');
                 _commander2.default.outputHelp();
                 break;
             }
@@ -164,12 +186,14 @@ switch (_commander2.default.Action) {
                 cssBundler(_commander2.default.read);
                 break;
             } else {
+                console.log('Invalid argument');
                 _commander2.default.outputHelp();
                 break;
             }
         }
     default:
         {
+            console.log('Invalid argument');
             _commander2.default.outputHelp();
         }
 }

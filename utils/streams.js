@@ -3,6 +3,7 @@ import through2 from 'through2';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import program from 'commander';
+import path from 'path';
 
 export function reverse() {
     process.stdin.pipe(through2(function (chunk, enc, cb) {
@@ -19,12 +20,16 @@ export function transform() {
 }
 
 export function outputFile(filePath) {
-    let file = fs.createReadStream(filePath).on('error', (err) => console.log(err.toString()));
+    let file = fs.createReadStream(path.normalize(filePath)).on('error', (err) => console.log(err.toString()));
     file.pipe(process.stdout);
 }
 
 export function convertFromFile(filePath) {
-    let file = fs.createReadStream(filePath).on('error', (err) => console.log(err.toString()));
+    let file = fs.createReadStream(path.normalize(filePath)).on('error', (err) => {
+        console.log(err.toString());
+        console.log('Invalid argument');
+        program.outputHelp();
+    });
     csvParser.parse(file, {
         chunk: function (result, parser) {
             process.stdout.write(JSON.stringify(result.data));
@@ -38,8 +43,10 @@ export function convertFromFile(filePath) {
 
 export function convertToFile(filePath) {
     let ctx = 0;
-    let rs = fs.createReadStream(filePath).on('error', (err) => {
+    let rs = fs.createReadStream(path.normalize(filePath)).on('error', (err) => {
         console.log(err.toString());
+        console.log('Invalid argument');
+        program.outputHelp();
     });
     csvParser.parse(rs, {
         complete: function (result, file) {
@@ -52,6 +59,10 @@ export function convertToFile(filePath) {
 }
 
 function cssBundler(folderPath) {
+    let fPath = path.normalize(folderPath);
+    if (fPath.substr(fPath.length - 1) !== '\\') {
+        fPath += '\\';
+    };
     const cssAppendix = `.ngmp18 {
         background-color: #fff;
         overflow: hidden;
@@ -68,7 +79,7 @@ function cssBundler(folderPath) {
         font-weight: bold;
       }\n`;
     let cssFiles;
-    promisify(fs.readdir)(folderPath).then((filenames) => {
+    promisify(fs.readdir)(fPath).then((filenames) => {
         cssFiles = filenames.filter((file) => {
             if (file.substr(file.length - 3) === 'css') {
                 return true
@@ -77,7 +88,7 @@ function cssBundler(folderPath) {
             }
         });
         return Promise.all(cssFiles.map((filename) => {
-            return promisify(fs.readFile)(folderPath + filename);
+            return promisify(fs.readFile)(fPath + filename);
         }));
     }).then((buffArr) => {
         let cssString = '';
@@ -86,9 +97,11 @@ function cssBundler(folderPath) {
         })
         return cssString + cssAppendix;
     }).then((cssString) => {
-        promisify(fs.writeFile)(folderPath + 'bundle.css', cssString);
+        promisify(fs.writeFile)(fPath + 'bundle.css', cssString);
     }).catch((err) => {
         console.log(err.toString());
+        console.log('Invalid argument');
+        program.outputHelp();
     })
 }
 
@@ -112,6 +125,7 @@ switch (program.Action) {
             outputFile(program.file);
             break;
         } else {
+            console.log('Invalid argument');
             program.outputHelp();
             break;
         }
@@ -121,6 +135,7 @@ switch (program.Action) {
             convertFromFile(program.file);
             break;
         } else {
+            console.log('Invalid argument');
             program.outputHelp();
             break;
         }
@@ -139,11 +154,13 @@ switch (program.Action) {
             cssBundler(program.read);
             break;
         } else {
+            console.log('Invalid argument');
             program.outputHelp();
             break;
         }
     }
     default: {
+        console.log('Invalid argument');
         program.outputHelp();
     }
 }
