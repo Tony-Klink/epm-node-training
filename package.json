@@ -1,12 +1,10 @@
 {
   "name": "epm-node-training",
   "version": "1.0.0",
-  "description": "- HOMEWORK 1 \"Node.js modules, npm\"",
-  "main": "app.js",
+  "description": "- HOMEWORK 4 \"MIDDLEWARE. FRAMEWORKS\"",
+  "main": "streams.js",
   "scripts": {
-    "babel-register": "babel-register",
-    "start": "nodemon --exec npm run babel-register -- ./app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npx babel http-servers --out-dir build"
   },
   "repository": {
     "type": "git",
@@ -22,14 +20,18 @@
   },
   "homepage": "https://github.com/Tony-Klink/epm-node-training#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
     "babel-register-cli": "^5.0.0",
     "nodemon": "^1.17.3"
   },
   "dependencies": {
-    "papaparse": "^4.4.0"
+    "commander": "^2.15.1",
+    "express": "^4.16.3",
+    "papaparse": "^4.4.0",
+    "through2": "^2.0.3"
   }
 }
