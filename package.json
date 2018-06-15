@@ -4,7 +4,8 @@
   "description": "- HOMEWORK 4 \"MIDDLEWARE. FRAMEWORKS\"",
   "main": "streams.js",
   "scripts": {
-    "build": "npx babel http-servers --out-dir build"
+    "build-express": "npx babel express-app --out-dir build/app",
+    "build-http": "npx babel http-servers --out-dir build"
   },
   "repository": {
     "type": "git",
@@ -29,9 +30,12 @@
     "nodemon": "^1.17.3"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "commander": "^2.15.1",
     "express": "^4.16.3",
+    "lokijs": "^1.5.5",
     "papaparse": "^4.4.0",
-    "through2": "^2.0.3"
+    "through2": "^2.0.3",
+    "uuid": "^3.2.1"
   }
 }
