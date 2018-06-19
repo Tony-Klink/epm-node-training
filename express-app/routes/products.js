@@ -11,7 +11,7 @@ productRouter.get('/', (req, res, next) => {
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('there is none');
     }
 })
 
@@ -20,7 +20,7 @@ productRouter.get('/:id', (req, res, next) => {
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('there is none');
     }
 })
 
@@ -29,14 +29,14 @@ productRouter.get('/:id/reviews', (req, res, next) => {
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('there is none');
     }
 })
 
 productRouter.post('/', jsonParser, (req, res, next) => {
     if(!req.body) return res.sendStatus(400);
     productCollection.insert(req.body);
-    res.sendStatus(200);
+    res.status(200).send('INSERTED');
 })
 
 export default productRouter;

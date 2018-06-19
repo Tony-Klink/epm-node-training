@@ -13,7 +13,7 @@ const product = {
  };
 
 const server = createServer((req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/json'});
+    res.writeHead(200, {'Content-Type': 'text/json; charset=utf-8'});
     res.write(JSON.stringify(product));
     res.end();
 });

@@ -18,22 +18,21 @@ const server = http.createServer();
 const port = process.env.PORT || 8080;
 
 server.on('request', function (request, response) {
-  const uri = url.parse(request.url);
-  const qs = uri.query ? querystring.parse(uri.query) : {};
+  const { method, url } = request;
+  response.writeHead(200);
 
-  const status = qs.status || 200;
-  const contentType = qs.contentType || 'text/plain';
-  const body = qs.body || 'hello there!';
-
-  response.writeHead(status, {
-    'Content-Type': contentType,
-    'Content-Length': body.length
+  request.on('data', function (message) {
+    if (method === 'GET') {
+      response.write(method + ': ' + message);
+    } else if (method === 'POST') {
+      response.write(method + ': ' + message);
+    } else {
+      response.write('UNKNOWN METHOD');
+    }
   });
-
-  console.log(`${uri.pathname} - HTTP ${status} ${contentType}: ${body}`);
-  response.write(body);
-
-  response.end();
+  request.on('end', function () {
+    response.end();
+  });
 });
 
 server.listen(port, function () {
