@@ -22,14 +22,14 @@ const productRouter = (0, _express.Router)();
 const jsonParser = _bodyParser2.default.json();
 
 productRouter.use(jsonParser);
-productRouter.use(_jwtVerify.jwtVerify);
+// productRouter.use(jwtVerify);
 
 productRouter.get('/', (req, res, next) => {
     const products = _product2.default.chain().find().data();
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('Not Found');
     }
 });
 
@@ -38,7 +38,7 @@ productRouter.get('/:id', (req, res, next) => {
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('Not Found');
     }
 });
 
@@ -47,14 +47,14 @@ productRouter.get('/:id/reviews', (req, res, next) => {
     if (products) {
         res.json(products);
     } else {
-        next();
+        res.status(404).send('Not Found');
     }
 });
 
 productRouter.post('/', (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
     _product2.default.insert(req.body);
-    res.sendStatus(200);
+    res.status(200).send('OK');
 });
 
 exports.default = productRouter;
