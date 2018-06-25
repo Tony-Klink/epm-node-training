@@ -1,19 +1,12 @@
-import { db } from './index';
+import Sequelize from 'sequelize';
+import { sequelize } from '../sequelize';
 
-class User {
-    constructor(name, email, verySecurePassword) {
-        this.name = name;
-        this.email = email;
-        this.password = verySecurePassword;
-    }
-}
 
-let userCollection = db.addCollection('user');
-
-userCollection.insert([
-    new User('John', 'test1@email.com', '1234'),
-    new User('Doe', 'test2@email.com', 'zaqwsx'),
-    new User('Jane', 'test3@email.com', 'zaq123')
-])
-
-export default userCollection;
+export const User = sequelize.define('User', {
+  name: Sequelize.STRING,
+  email: Sequelize.STRING,
+  password: Sequelize.STRING
+}, {});
+User.associate = function (models) {
+  // associations can be defined here
+};

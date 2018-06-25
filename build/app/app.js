@@ -16,6 +16,8 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _sequelize = require('./sequelize');
+
 var _cookieMiddleware = require('./middlewares/cookieMiddleware');
 
 var _queryMiddleware = require('./middlewares/queryMiddleware');
@@ -25,8 +27,6 @@ var _routes = require('./routes');
 var _routes2 = _interopRequireDefault(_routes);
 
 var _user = require('./models/user');
-
-var _user2 = _interopRequireDefault(_user);
 
 var _passport = require('passport');
 
@@ -64,6 +64,12 @@ const sess = {
     saveUninitialized: true
 };
 
+_sequelize.sequelize.authenticate().then(() => {
+    console.log('Connection has been established successfully.');
+}).catch(err => {
+    console.error('Unable to connect to the database:', err);
+});
+
 const app = (0, _express2.default)();
 
 app.use(_cookieMiddleware.cookieParser);
@@ -74,10 +80,10 @@ app.use(_bodyParser2.default.urlencoded({ extended: true }));
 
 app.use(_passport2.default.initialize());
 app.use(_passport2.default.session());
-
-const authenticate = (username, password) => {
+//#region passport.js
+const authenticate = async (username, password) => {
     console.log('username, password: ', username, password);
-    const user = _user2.default.findOne({ name: username, password: password });
+    const user = await _user.User.findOne({ name: username, password: password });
     if (user) {
         return true;
     } else {
@@ -85,11 +91,11 @@ const authenticate = (username, password) => {
     }
 };
 
-_passport2.default.use(new LocalStrategy((username, password, done) => {
+_passport2.default.use(new LocalStrategy(async (username, password, done) => {
     console.log('username, password: ', username, password);
     // check if the user is authenticated or not
     if (authenticate(username, password)) {
-        const user = _user2.default.findOne({ name: username, password: password });
+        const user = await _user.User.findOne({ name: username, password: password });
         return done(null, user);
     }
     return done(null, false);
@@ -99,8 +105,8 @@ _passport2.default.use(new FacebookStrategy({
     clientID: 'FACEBOOK_APP_ID',
     clientSecret: 'FACEBOOK_APP_SECRET',
     callbackURL: 'http://www.example.com/login/facebook/callback'
-}, (accessToken, refreshToken, profile, done) => {
-    const user = _user2.default.findOne({ name: username, password: password });
+}, async (accessToken, refreshToken, profile, done) => {
+    const user = await _user.User.findOne({ name: username, password: password });
     if (user) {
         return done(null, user);
     } else {
@@ -112,8 +118,8 @@ _passport2.default.use(new TwitterStategy({
     consumerKey: 'TWITTER_CONSUMER_KEY',
     consumerSecret: 'TWITTER_CONSUMER_SECRET',
     callbackURL: 'http://www.example.com/login/twitter/callback'
-}, (token, tokenSecret, profile, done) => {
-    const user = _user2.default.findOne({ name: username, password: password });
+}, async (token, tokenSecret, profile, done) => {
+    const user = await _user.User.findOne({ name: username, password: password });
     if (user) {
         return done(null, user);
     } else {
@@ -125,8 +131,8 @@ _passport2.default.use(new GoogleStategy({
     consumerKey: 'GOOGLE_CONSUMER_KEY',
     consumerSecret: 'GOOGLE_CONSUMER_SECRET',
     callbackURL: 'http://www.example.com/login/google/callback'
-}, (token, tokenSecret, profile, done) => {
-    const user = _user2.default.findOne({ name: username, password: password });
+}, async (token, tokenSecret, profile, done) => {
+    const user = await _user.User.findOne({ name: username, password: password });
     if (user) {
         return done(null, user);
     } else {
@@ -138,8 +144,8 @@ _passport2.default.use(new GoogleOAuth2Strategy({
     clientID: 'GOOGLE_CLIENT_ID',
     clientSecret: 'GOOGLE_CLIENT_SECRET',
     callbackURL: 'http://www.example.com/login/google2/callback'
-}, (accessToken, refreshToken, profile, done) => {
-    const user = _user2.default.findOne({ name: username, password: password });
+}, async (accessToken, refreshToken, profile, done) => {
+    const user = await _user.User.findOne({ name: username, password: password });
     if (user) {
         return done(null, user);
     } else {
@@ -198,5 +204,5 @@ const isAuthenticated = (req, res, next) => {
 app.get('/secret', isAuthenticated, (req, res) => {
     res.json({ secret: { user: req.user } });
 });
-
+//#endregion
 exports.default = app;

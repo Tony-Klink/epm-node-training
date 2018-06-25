@@ -14,8 +14,6 @@ var _jwtVerify = require('../middlewares/jwtVerify');
 
 var _product = require('../models/product');
 
-var _product2 = _interopRequireDefault(_product);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const productRouter = (0, _express.Router)();
@@ -24,8 +22,8 @@ const jsonParser = _bodyParser2.default.json();
 productRouter.use(jsonParser);
 // productRouter.use(jwtVerify);
 
-productRouter.get('/', (req, res, next) => {
-    const products = _product2.default.chain().find().data();
+productRouter.get('/', async (req, res, next) => {
+    const products = await _product.Product.findAll();
     if (products) {
         res.json(products);
     } else {
@@ -33,8 +31,8 @@ productRouter.get('/', (req, res, next) => {
     }
 });
 
-productRouter.get('/:id', (req, res, next) => {
-    const products = _product2.default.findOne({ id: req.params.id });
+productRouter.get('/:id', async (req, res, next) => {
+    const products = await _product.Product.findOne({ id: req.params.id });
     if (products) {
         res.json(products);
     } else {
@@ -42,8 +40,8 @@ productRouter.get('/:id', (req, res, next) => {
     }
 });
 
-productRouter.get('/:id/reviews', (req, res, next) => {
-    const products = _product2.default.findOne({ id: req.params.id }).reviews;
+productRouter.get('/:id/reviews', async (req, res, next) => {
+    const products = await _product.Product.findOne({ id: req.params.id }).reviews;
     if (products) {
         res.json(products);
     } else {
@@ -51,9 +49,9 @@ productRouter.get('/:id/reviews', (req, res, next) => {
     }
 });
 
-productRouter.post('/', (req, res, next) => {
+productRouter.post('/', async (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
-    _product2.default.insert(req.body);
+    _product.Product.insertOrUpdate(req.body);
     res.status(200).send('OK');
 });
 

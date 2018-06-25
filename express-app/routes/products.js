@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import { jwtVerify } from '../middlewares/jwtVerify';
-import productCollection from '../models/product';
+import { Product } from '../models/product';
 
 const productRouter = Router();
 const jsonParser = bodyParser.json();
@@ -9,8 +9,8 @@ const jsonParser = bodyParser.json();
 productRouter.use(jsonParser);
 // productRouter.use(jwtVerify);
 
-productRouter.get('/', (req, res, next) => {
-    const products = productCollection.chain().find().data();
+productRouter.get('/', async (req, res, next) => {
+    const products = await Product.findAll();
     if (products) {
         res.json(products);
     } else {
@@ -18,8 +18,8 @@ productRouter.get('/', (req, res, next) => {
     }
 })
 
-productRouter.get('/:id', (req, res, next) => {
-    const products = productCollection.findOne({id: req.params.id});
+productRouter.get('/:id', async (req, res, next) => {
+    const products = await Product.findOne({id: req.params.id});
     if (products) {
         res.json(products);
     } else {
@@ -27,8 +27,8 @@ productRouter.get('/:id', (req, res, next) => {
     }
 })
 
-productRouter.get('/:id/reviews', (req, res, next) => {
-    const products = productCollection.findOne({id: req.params.id}).reviews;
+productRouter.get('/:id/reviews', async (req, res, next) => {
+    const products = await Product.findOne({id: req.params.id}).reviews;
     if (products) {
         res.json(products);
     } else {
@@ -36,9 +36,9 @@ productRouter.get('/:id/reviews', (req, res, next) => {
     }
 })
 
-productRouter.post('/', (req, res, next) => {
+productRouter.post('/', async (req, res, next) => {
     if(!req.body) return res.sendStatus(400);
-    productCollection.insert(req.body);
+    Product.insertOrUpdate(req.body);
     res.status(200).send('OK');
 })
 

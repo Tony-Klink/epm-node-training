@@ -1,11 +1,12 @@
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
+import { sequelize } from './sequelize';
 import { cookieParser } from './middlewares/cookieMiddleware';
 import { parseQuery } from './middlewares/queryMiddleware';
 import router from './routes';
 
-import userCollection from './models/user';
+import { User } from './models/user';
 
 import passport from 'passport';
 import * as plStr from 'passport-local';
@@ -25,6 +26,15 @@ const sess = {
     saveUninitialized: true,
 };
 
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 const app = express();
 
 
@@ -36,10 +46,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-const authenticate = (username, password) => {
+//#region passport.js
+const authenticate = async (username, password) => {
     console.log('username, password: ', username, password);
-    const user = userCollection.findOne({ name: username, password: password });
+    const user = await User.findOne({ name: username, password: password });
     if (user) {
         return true;
     } else {
@@ -47,11 +57,11 @@ const authenticate = (username, password) => {
     }
 };
 
-passport.use(new LocalStrategy((username, password, done) => {
+passport.use(new LocalStrategy(async (username, password, done) => {
     console.log('username, password: ', username, password);
     // check if the user is authenticated or not
     if (authenticate(username, password)) {
-        const user = userCollection.findOne({ name: username, password: password });
+        const user = await User.findOne({ name: username, password: password });
         return done(null, user);
     }
     return done(null, false);
@@ -61,8 +71,8 @@ passport.use(new FacebookStrategy({
     clientID: 'FACEBOOK_APP_ID',
     clientSecret: 'FACEBOOK_APP_SECRET',
     callbackURL: 'http://www.example.com/login/facebook/callback'
-}, (accessToken, refreshToken, profile, done) => {
-    const user = userCollection.findOne({ name: username, password: password });
+}, async (accessToken, refreshToken, profile, done) => {
+    const user = await User.findOne({ name: username, password: password });
     if (user) {
         return done(null, user);
     } else {
@@ -75,8 +85,8 @@ passport.use(new TwitterStategy({
     consumerSecret: 'TWITTER_CONSUMER_SECRET',
     callbackURL: 'http://www.example.com/login/twitter/callback'
 },
-    (token, tokenSecret, profile, done) => {
-        const user = userCollection.findOne({ name: username, password: password });
+    async (token, tokenSecret, profile, done) => {
+        const user = await User.findOne({ name: username, password: password });
         if (user) {
             return done(null, user);
         } else {
@@ -90,8 +100,8 @@ passport.use(new GoogleStategy({
     consumerSecret: 'GOOGLE_CONSUMER_SECRET',
     callbackURL: 'http://www.example.com/login/google/callback'
 },
-    (token, tokenSecret, profile, done) => {
-        const user = userCollection.findOne({ name: username, password: password });
+    async (token, tokenSecret, profile, done) => {
+        const user = await User.findOne({ name: username, password: password });
         if (user) {
             return done(null, user);
         } else {
@@ -104,8 +114,8 @@ passport.use(new GoogleOAuth2Strategy({
     clientID: 'GOOGLE_CLIENT_ID',
     clientSecret: 'GOOGLE_CLIENT_SECRET',
     callbackURL: 'http://www.example.com/login/google2/callback'
-}, (accessToken, refreshToken, profile, done) => {
-    const user = userCollection.findOne({ name: username, password: password });
+}, async (accessToken, refreshToken, profile, done) => {
+    const user = await User.findOne({ name: username, password: password });
         if (user) {
             return done(null, user);
         } else {
@@ -171,5 +181,5 @@ const isAuthenticated = (req, res, next) => {
 app.get('/secret', isAuthenticated, (req, res) => {
     res.json({ secret: { user: req.user } });
 });
-
+//#endregion
 export default app;

@@ -8,8 +8,6 @@ var _express = require('express');
 
 var _user = require('../models/user');
 
-var _user2 = _interopRequireDefault(_user);
-
 var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
@@ -24,8 +22,8 @@ const userRouter = (0, _express.Router)();
 userRouter.use(jsonParser);
 userRouter.use(_jwtVerify.jwtVerify);
 
-userRouter.get('/', (req, res, next) => {
-    const users = _user2.default.chain().find().data();
+userRouter.get('/', async (req, res, next) => {
+    const users = await _user.User.findAll();
     if (users) {
         res.json(users);
     } else {

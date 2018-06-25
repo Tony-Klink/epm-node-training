@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import userCollection from '../models/user';
+import { User } from '../models/user';
 import bodyParser from 'body-parser';
 import { jwtVerify } from '../middlewares/jwtVerify';
 
@@ -10,8 +10,8 @@ userRouter.use(jsonParser);
 userRouter.use(jwtVerify);
 
 
-userRouter.get('/', (req, res, next) => {
-    const users = userCollection.chain().find().data();
+userRouter.get('/', async (req, res, next) => {
+    const users = await User.findAll();
     if (users) {
         res.json(users);
     } else {
