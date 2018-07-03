@@ -16,7 +16,7 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _sequelize = require('./sequelize');
+var _mongoose = require('./mongoose');
 
 var _cookieMiddleware = require('./middlewares/cookieMiddleware');
 
@@ -64,10 +64,8 @@ const sess = {
     saveUninitialized: true
 };
 
-_sequelize.sequelize.authenticate().then(() => {
-    console.log('Connection has been established successfully.');
-}).catch(err => {
-    console.error('Unable to connect to the database:', err);
+_mongoose.db.on('error', err => {
+    console.log('Connection error ', err);
 });
 
 const app = (0, _express2.default)();

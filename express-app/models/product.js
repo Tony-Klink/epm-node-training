@@ -1,12 +1,9 @@
-import Sequelize from 'sequelize';
-import { sequelize } from '../sequelize';
+const mongoose = require('mongoose');
 
+const productSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  reviews: String
+}, {strict: false});
 
-export const Product = sequelize.define('Product', {
-  name: Sequelize.STRING,
-  description: Sequelize.STRING,
-  reviews: Sequelize.STRING
-}, {});
-Product.associate = function (models) {
-  // associations can be defined here
-};
+export const Product = mongoose.model('Product', productSchema);

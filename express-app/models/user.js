@@ -1,12 +1,9 @@
-import Sequelize from 'sequelize';
-import { sequelize } from '../sequelize';
+const mongoose = require('mongoose');
 
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String
+}, {strict: false});
 
-export const User = sequelize.define('User', {
-  name: Sequelize.STRING,
-  email: Sequelize.STRING,
-  password: Sequelize.STRING
-}, {});
-User.associate = function (models) {
-  // associations can be defined here
-};
+export const User = mongoose.model('User', userSchema);

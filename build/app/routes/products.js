@@ -23,7 +23,7 @@ productRouter.use(jsonParser);
 // productRouter.use(jwtVerify);
 
 productRouter.get('/', async (req, res, next) => {
-    const products = await _product.Product.findAll();
+    const products = await _product.Product.find();
     if (products) {
         res.json(products);
     } else {
@@ -32,7 +32,7 @@ productRouter.get('/', async (req, res, next) => {
 });
 
 productRouter.get('/:id', async (req, res, next) => {
-    const products = await _product.Product.findOne({ id: req.params.id });
+    const products = await _product.Product.findOne({ _id: req.params.id });
     if (products) {
         res.json(products);
     } else {
@@ -41,7 +41,7 @@ productRouter.get('/:id', async (req, res, next) => {
 });
 
 productRouter.get('/:id/reviews', async (req, res, next) => {
-    const products = await _product.Product.findOne({ id: req.params.id }).reviews;
+    const products = await _product.Product.findOne({ _id: req.params.id }).reviews;
     if (products) {
         res.json(products);
     } else {
@@ -51,8 +51,16 @@ productRouter.get('/:id/reviews', async (req, res, next) => {
 
 productRouter.post('/', async (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
-    _product.Product.insertOrUpdate(req.body);
+    let product = new _product.Product(Object.assign(req.body, { lastModifiedDate: new Date() }));
+    product.save();
     res.status(200).send('OK');
+});
+
+productRouter.delete('/:id', async (req, res, next) => {
+    if (!req.body) return res.sendStatus(400);
+    _product.Product.deleteOne({ _id: req.params.id }).then(() => {
+        res.status(200).send('OK');
+    }).catch(err => res.status(500).send('server error' + err));
 });
 
 exports.default = productRouter;

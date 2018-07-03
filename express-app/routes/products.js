@@ -10,7 +10,7 @@ productRouter.use(jsonParser);
 // productRouter.use(jwtVerify);
 
 productRouter.get('/', async (req, res, next) => {
-    const products = await Product.findAll();
+    const products = await Product.find();
     if (products) {
         res.json(products);
     } else {
@@ -19,7 +19,7 @@ productRouter.get('/', async (req, res, next) => {
 })
 
 productRouter.get('/:id', async (req, res, next) => {
-    const products = await Product.findOne({id: req.params.id});
+    const products = await Product.findOne({ _id: req.params.id });
     if (products) {
         res.json(products);
     } else {
@@ -28,7 +28,7 @@ productRouter.get('/:id', async (req, res, next) => {
 })
 
 productRouter.get('/:id/reviews', async (req, res, next) => {
-    const products = await Product.findOne({id: req.params.id}).reviews;
+    const products = await Product.findOne({ _id: req.params.id }).reviews;
     if (products) {
         res.json(products);
     } else {
@@ -37,9 +37,17 @@ productRouter.get('/:id/reviews', async (req, res, next) => {
 })
 
 productRouter.post('/', async (req, res, next) => {
-    if(!req.body) return res.sendStatus(400);
-    Product.insertOrUpdate(req.body);
+    if (!req.body) return res.sendStatus(400);
+    let product = new Product(Object.assign(req.body, {lastModifiedDate: new Date()}))
+    product.save();
     res.status(200).send('OK');
+})
+
+productRouter.delete('/:id', async (req, res, next) => {
+    if (!req.body) return res.sendStatus(400);
+    Product.deleteOne({ _id: req.params.id }).then(() => {
+        res.status(200).send('OK');
+    }).catch((err) => res.status(500).send('server error' + err));
 })
 
 export default productRouter;

@@ -1,9 +1,10 @@
 'use strict';
 
+var productsArray = require('./products.json');
 module.exports = {
   up: (queryInterface, Sequelize) => {
     const date = new Date();
-    return queryInterface.bulkInsert('Products', [{ name: 'product 1', description: 'some product', reviews: 'good product', createdAt: date, updatedAt: date }, { name: 'product 2', description: 'another product', reviews: 'bad product', createdAt: date, updatedAt: date }], {});
+    return queryInterface.bulkInsert('Products', productsArray, {});
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.

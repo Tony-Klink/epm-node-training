@@ -1,10 +1,12 @@
 {
   "name": "epm-node-training",
   "version": "1.0.0",
-  "description": "- HOMEWORK 4 \"MIDDLEWARE. FRAMEWORKS\"",
+  "description": "- HOMEWORK 7 \"NoSQL DATABASES. ODM\"",
   "main": "streams.js",
   "scripts": {
-    "build": "npx babel express-app --out-dir build/app && node build/app/index.js"
+    "build": "npx babel express-app --out-dir build/app && node build/app/index.js",
+    "mongoose": "npx babel random-server --out-dir build/random && node build/random/mongoose.js",
+    "native": "npx babel random-server --out-dir build/random && node build/random/native-app.js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,8 @@
     "express-session": "^1.15.6",
     "jsonwebtoken": "^8.3.0",
     "lokijs": "^1.5.5",
+    "mongodb": "^3.1.0",
+    "mongoose": "^5.1.7",
     "papaparse": "^4.4.0",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",

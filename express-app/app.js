@@ -1,7 +1,7 @@
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-import { sequelize } from './sequelize';
+import { db } from './mongoose';
 import { cookieParser } from './middlewares/cookieMiddleware';
 import { parseQuery } from './middlewares/queryMiddleware';
 import router from './routes';
@@ -26,14 +26,9 @@ const sess = {
     saveUninitialized: true,
 };
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+db.on('error', (err) => {
+    console.log('Connection error ', err);
+})
 
 const app = express();
 

@@ -3,21 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.User = undefined;
+const mongoose = require('mongoose');
 
-var _sequelize = require('sequelize');
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String
+}, { strict: false });
 
-var _sequelize2 = _interopRequireDefault(_sequelize);
-
-var _sequelize3 = require('../sequelize');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const User = exports.User = _sequelize3.sequelize.define('User', {
-  name: _sequelize2.default.STRING,
-  email: _sequelize2.default.STRING,
-  password: _sequelize2.default.STRING
-}, {});
-User.associate = function (models) {
-  // associations can be defined here
-};
+const User = exports.User = mongoose.model('User', userSchema);
