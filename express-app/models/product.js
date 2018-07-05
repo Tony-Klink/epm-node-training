@@ -4,6 +4,6 @@ const productSchema = new mongoose.Schema({
   name: String,
   description: String,
   reviews: String
-}, {strict: false});
+}, {strict: false, timestamps: {updatedAt: 'lastModifiedDate'}});
 
 export const Product = mongoose.model('Product', productSchema);

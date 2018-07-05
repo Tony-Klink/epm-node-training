@@ -8,6 +8,6 @@ const citySchema = new mongoose.Schema({
         lat: Number,
         long: Number
     }
-}, {strict: false});
+}, {strict: false, timestamps: {updatedAt: 'lastModifiedDate'}});
 
 export const City = mongoose.model('City', citySchema);

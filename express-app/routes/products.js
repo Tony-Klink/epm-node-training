@@ -38,9 +38,14 @@ productRouter.get('/:id/reviews', async (req, res, next) => {
 
 productRouter.post('/', async (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
-    let product = new Product(Object.assign(req.body, {lastModifiedDate: new Date()}))
-    product.save();
-    res.status(200).send('OK');
+    let product = new Product(req.body);
+    product.save({safe: false}, (err, product) => {
+        if(err) {
+            res.sendStatus(400);
+        } else {
+            res.status(200).send('OK');
+        }
+    });
 })
 
 productRouter.delete('/:id', async (req, res, next) => {

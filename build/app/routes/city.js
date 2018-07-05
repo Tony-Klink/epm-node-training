@@ -10,6 +10,8 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _validateCity = require('../middlewares/validateCity');
+
 var _city = require('../models/city');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -18,6 +20,7 @@ const cityRouter = (0, _express.Router)();
 const jsonParser = _bodyParser2.default.json();
 
 cityRouter.use(jsonParser);
+cityRouter.use(_validateCity.validateCity);
 
 cityRouter.get('/', async (req, res, next) => {
     const cities = await _city.City.find();

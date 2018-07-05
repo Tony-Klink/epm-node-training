@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
+import { validateCity } from '../middlewares/validateCity';
 import { City } from '../models/city';
 
 const cityRouter = Router();
 const jsonParser = bodyParser.json();
 
 cityRouter.use(jsonParser);
+cityRouter.use(validateCity);
 
 cityRouter.get('/', async (req, res, next) => {
     const cities = await City.find();
@@ -28,8 +30,13 @@ cityRouter.get('/:id', async (req, res, next) => {
 cityRouter.post('/', async (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
     let city = new City(Object.assign(req.body, {lastModifiedDate: new Date()}));
-    city.save();
-    res.status(200).send('OK');
+    city.save((err, city) => {
+        if(err) {
+            res.sendStatus(400);
+        } else {
+            res.status(200).send('OK');
+        }
+    });
 })
 
 cityRouter.put('/:id', async (req, res, next) => {
