@@ -2,6 +2,12 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+const mongoose = require('./mongoose');
+
+mongoose.db.on('error', err => {
+  console.log('Connection error ', err);
+});
+
 module.exports = app; // for testing
 
 var config = {
