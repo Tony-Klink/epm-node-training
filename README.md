@@ -1,14 +1,14 @@
 # EPAM NODE.JS TRAINING MODULES
-- HOMEWORK 7 "NoSQL DATABASES. ODM"
+- HOMEWORK 8 "SWAGGER. DOCS"
 
-# Build and run  Express App
+# Run  Swagger App
 
-- npm run build
+- cd to /swagger-demo
+- npm install -g swagger
+- npm i
+- swagger project start
 
-# Build and run native driver task
+# Open Swagger Documentation
 
-- npm run native
-
-# Build and run mongoose driver task
-
-- npm run mongoose
+- cd to /swagger-demo
+- swagger project edit
