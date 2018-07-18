@@ -1,0 +1,336 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Swagger Demo App
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /api
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /city:
+    x-swagger-router-controller: cityController
+    get:
+      tags:
+      - city
+      description: Returns array of 'City'
+      operationId: findCities
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityResponse"
+        404:
+          description: There is no Cities
+    post:
+      tags:
+      - city
+      summary: Add a new 'City' to DB
+      operationId: addCity
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: City object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/CityResponse'
+      responses:
+        405:
+          description: Invalid input
+  /city/{cityId}:
+    x-swagger-router-controller: cityController
+    get:
+      tags:
+      - city
+      description: Returns a 'City' by id
+      operationId: findCityById
+      produces:
+      - application/json
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/CityResponse"
+        404:
+          description: There is no Cities
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    put:
+      tags:
+      - city 
+      description: Update 'City' by id
+      operationId: updateCityById
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        400:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    
+    delete:
+      tags:
+      - city
+      description: Delete 'City' by id
+      operationId: deleteCityById
+      parameters:
+      - name: cityId
+        in: path
+        description: ID of city to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        400:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /product:
+    x-swagger-router-controller: productController
+    get:
+      tags:
+      - product
+      description: Returns array of 'Products'
+      operationId: findProducts
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ProductResponse"
+        404:
+          description: There is no Products
+    post:
+      tags:
+      - product
+      summary: Add a new 'Product' to DB
+      operationId: addProduct
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Product object that needs to be added to the store
+        required: true
+        schema:
+          $ref: '#/definitions/ProductResponse'
+      responses:
+        405:
+          description: Invalid input
+  /product/{productId}:
+    x-swagger-router-controller: productController
+    get:
+      tags:
+      - product
+      description: Returns a 'Product' by id
+      operationId: findProductById
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/ProductResponse"
+        404:
+          description: There is no Products
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+      - product
+      description: Delete 'Product' by id
+      operationId: deleteProductById
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        400:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /product/{productId}/reviews:
+    x-swagger-router-controller: productController
+    get:
+      tags:
+      - product
+      description: Returns a 'Product' by id
+      operationId: findReviewsByProductId
+      produces:
+      - application/json
+      parameters:
+      - name: productId
+        in: path
+        description: ID of product to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: Success
+          schema:
+            type: string
+        404:
+          description: There is no Products
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /user:
+    x-swagger-router-controller: userController
+    get:
+      tags:
+      - user
+      description: Returns array of 'User'
+      operationId: findUsers
+      produces:
+      - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserResponse"
+        404:
+          description: There is no Users
+  /user/{userId}:
+    x-swagger-router-controller: userController
+    delete:
+      tags:
+      - user
+      description: Delete 'User' by id
+      operationId: deleteUserById
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to delete
+        required: true
+        type: integer
+        format: int64
+      responses:
+        400:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        500:
+          description: Server error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  CityResponse:
+    required:
+      - name
+    type: object
+    properties:
+      name:
+        type: string
+        example: Moscow
+      country:
+        type: string
+        example: Russia
+      capital:
+        type: boolean
+      location:
+        $ref: '#/definitions/Location'
+  Location:
+    type: object
+    required:
+      - lat
+      - long
+    properties:
+      lat:
+        type: integer
+        format: int64
+      long:
+        type: integer
+        format: int64
+  ProductResponse:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        example: Table
+      description:
+        type: string
+      rewiews:
+        type: string
+  UserResponse:
+    type: object
+    required:
+      - name
+      - email
+    properties:
+      name:
+        type: string
+        example: John
+      email:
+        type: string
+      password:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
