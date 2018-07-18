@@ -39,7 +39,7 @@ productRouter.get('/:id/reviews', async (req, res, next) => {
 productRouter.post('/', async (req, res, next) => {
     if (!req.body) return res.sendStatus(400);
     let product = new Product(req.body);
-    product.save({safe: false}, (err, product) => {
+    product.save((err, product) => {
         if(err) {
             res.sendStatus(400);
         } else {
